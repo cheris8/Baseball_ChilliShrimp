@@ -65,8 +65,9 @@ sum(is.infinite(SB_PER$SB_per))    # Inf 개수 세기
 
 ###------------------결과 저장-----------------------### 
 
-write.csv(P_KBB,'C:/Users/seungjun/Desktop/baseball/Baseball_ChilliShrimp/data/P_KBB.csv')
-write.csv(SB_PER,'C:/Users/seungjun/Desktop/baseball/Baseball_ChilliShrimp/data/B_KBB_SB_PER.csv')
+
+write.csv(select(P_KBB,KBB),'C:/Users/seungjun/Desktop/baseball/Baseball_ChilliShrimp/data/투수_볼넷당삼진.csv')
+write.csv(select(SB_PER,KBB,SB_per),'C:/Users/seungjun/Desktop/baseball/Baseball_ChilliShrimp/data/타자_볼넷당삼진_도루성공율.csv')
 
 
 
