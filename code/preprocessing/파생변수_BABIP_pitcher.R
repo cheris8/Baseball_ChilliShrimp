@@ -18,4 +18,8 @@ BABIP$BABIP[is.na(BABIP$BABIP)] = 0
 
 sum(is.na(BABIP$BABIP))
 
-write.csv(BABIP$BABIP,'C:/Users/seungjun/Desktop/baseball/Baseball_ChilliShrimp/data/Batter_Total_BABIP.csv')
+df1 = left_join(pitcher,select(BABIP,P_ID,BABIP), by='P_ID')
+df1
+
+write.csv(df1,'C:/Users/seungjun/Desktop/baseball/Baseball_ChilliShrimp/data/Batter_Total_BABIP.csv')
+
