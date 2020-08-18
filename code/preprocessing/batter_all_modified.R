@@ -15,14 +15,17 @@ head(batter_tidy_XR)
 head(batter_tidy_볼넷당삼진_도루성공율)
 head(batter_Total_BABIP)
 
+df <- batter_KK_BB_HR_rate %>% select(-c(total_AB,total_KK,total_BB,total_HR))
+
 batter_KK_BB_HR_rate = batter_KK_BB_HR_rate %>% select(-X)
 batter_tidy_AVG_OBP_SLG_OPS = batter_tidy_AVG_OBP_SLG_OPS %>% select(-X)
 batter_tidy_XR = batter_tidy_XR %>% select(-X)
 batter_tidy_볼넷당삼진_도루성공율 = batter_tidy_볼넷당삼진_도루성공율 %>% select(-X)
 batter_Total_BABIP = batter_Total_BABIP %>% select(-X)
-
+df = df %>% select(-X)
+left_join(df, by = 'P_ID') %>%
 batter_all =batter_all %>%
-  left_join(batter_KK_BB_HR_rate, by=names(batter_all)) %>%
+  left_join(batter_KK_BB_HR_rate,by=names(batter_all)) %>%
   left_join(batter_tidy_AVG_OBP_SLG_OPS, by=names(batter_all)) %>%
   left_join(batter_tidy_XR, by=names(batter_all)) %>%
   left_join(batter_tidy_볼넷당삼진_도루성공율, by=names(batter_all)) %>%

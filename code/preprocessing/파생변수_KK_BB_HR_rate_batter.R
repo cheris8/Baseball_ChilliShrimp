@@ -1,24 +1,23 @@
-Batter_tidy = read.csv('C:/Users/seungjun/Desktop/baseball/Baseball_ChilliShrimp/data/batter_tidy.csv',header=T)
-head(Batter_tidy)
-str(Batter_tidy)
+batter = read.csv('C:/Users/seungjun/Desktop/baseball/Baseball_ChilliShrimp/data/batter_tidy.csv',header=T)
 
-batter_tidy = Batter_tidy %>%
-  group_by(P_ID) %>%
-summarise(total_KK = sum(KK), total_BB =sum(BB), total_HR =sum(HR), total_AB = sum(AB) )
-
-rate = batter_tidy %>%
-  mutate(KK_rate = total_KK/total_AB, BB_rate = total_BB/total_AB, HR_rate = total_HR/total_AB)
+head(batter)
+head(df)
+df = batter %>%
+  mutate(HR_rate=HR/HIT) %>%
+  mutate(KK_rate=KK/PA) %>%
+  mutate(BB_rate=BB/PA) 
+rate = select(df,c(HR_rate,KK_rate,BB_rate))
 
 head(rate)
 
 sum(is.na(rate))
-sum(is.infinite(rate$total_KK))
-sum(is.infinite(rate$total_BB))
-sum(is.infinite(rate$total_HR))
-sum(is.infinite(rate$total_AB))
+sum(is.infinite(rate$KK_rate))
+sum(is.infinite(rate$BB_rate))
+sum(is.infinite(rate$HR_rate))
 
 rate[is.na(rate)] = 0
 sum(is.na(rate))
+rate$BB_rate[is.infinite(rate$BB_rate)] = 0
 
 
 write.csv(rate,'C:/Users/seungjun/Desktop/baseball/Baseball_ChilliShrimp/data/batter_KK_BB_HR_rate.csv' )
