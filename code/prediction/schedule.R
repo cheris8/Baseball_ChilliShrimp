@@ -4,7 +4,7 @@ schedule = read_csv("C:/Users/dhxog/Desktop/ESC_summer/Baseball_ChilliShrimp/dat
 before = read_csv("C:/Users/dhxog/Desktop/ESC_summer/Baseball_ChilliShrimp/data/kbo_schedule_before_0719.csv")
 
 
-schedule = schedule %>% select(-c(X1, day, 구장))
+schedule = schedule %>% select(-c(X1, day))
 before = before %>% select(-c(X1, day))
 
 schedule = schedule %>% mutate(team_visit = case_when(
