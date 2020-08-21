@@ -1,13 +1,14 @@
-# 상관계수 플롯
-install.packages("corrplot")
-install.packages('glmnet')
+# batter feature selection #
+
+#install.packages("corrplot")
+#install.packages('glmnet')
 
 library(tidyverse)
 library(corrplot) 
 library(glmnet)
 
 
-batter = read.csv('C:/Users/seungjun/Desktop/baseball/Baseball_ChilliShrimp/data/batter_all.csv',header=T)
+batter = read.csv('/Users/kimchaehyeong/Documents/BIGCONTEST/Baseball_ChilliShrimp/data/batter_all.csv',header=T)
 batter = batter  %>%
   mutate(H2_rate=H2/HIT,H3_rate=H3/HIT)
 names(batter)
@@ -24,4 +25,6 @@ batter = batter %>% select(-c(X,T_ID,year,month,P_ID,BAT_ORDER,KK_rate,KBB,
 
 names(batter)
 batter_cor = cor(batter)           
-corrplot(batter_cor ,method="shade",addshade="all",tl.col="red",tl.srt=30, diag=FALSE ) 
+corrplot(batter_cor ,method="shade",addshade="all",tl.col="red",tl.srt=30, diag=FALSE)
+
+write.csv(batter, 'batter_feature_selection.csv')
