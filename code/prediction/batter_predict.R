@@ -55,7 +55,6 @@ predict = predict %>% left_join(p_t, by = c('P_ID'))
 
 games = read_csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/schedule_left.csv")
 
-games = games %>% select(-c(H_A_AWAY, H_A_HOME))
 
 predict = predict %>% left_join(games, by = c('year', 'month', 'T_ID')) %>%  select(feature)
 
