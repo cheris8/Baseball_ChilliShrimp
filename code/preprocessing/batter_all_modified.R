@@ -24,6 +24,7 @@ batter_tidy_볼넷당삼진_도루성공율 = batter_tidy_볼넷당삼진_도루성공율 %>% select
 batter_Total_BABIP = batter_Total_BABIP %>% select(-X)
 df = df %>% select(-X)
 left_join(df, by = 'P_ID') %>%
+
 batter_all =batter_all %>%
   left_join(batter_KK_BB_HR_rate,by=names(batter_all)) %>%
   left_join(batter_tidy_AVG_OBP_SLG_OPS, by=names(batter_all)) %>%
