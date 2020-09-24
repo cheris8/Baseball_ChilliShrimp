@@ -198,7 +198,7 @@ batter_selection = batter_tidy6 %>% select(-c(KK_rate,KBB,SB,CS,BB,KK,AB,HIT,H2,
                               ,RBI,RUN,HR,SH,SF,IB,HP,GD,ERR,ERR,LOB,HOME,AWAY))
 
 names(batter_selection)  #  선택된 변수들 -> batter_selection에 저장했습니다.
-
+write.csv(batter_selection,'C:/Users/seungjun/Desktop/baseball/data/batter_feature_selection.csv')
 
 
 #--------------------------------------------------------------------------#
