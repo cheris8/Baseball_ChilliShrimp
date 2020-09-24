@@ -225,11 +225,11 @@ names(data_set)
 pitcher_cor = cor(data_set)           
 corrplot(pitcher_cor ,method="shade",addshade="all",tl.col="red",tl.srt=30, diag=FALSE )
 
-pitcher_selection = pitcher5 %>% select(-c(KBB,ER,HOLD,INN2,WP,
+pitcher_selection = pitcher5 %>% select(-c(KBB,ER,HOLD,INN2,WP,WLS,
                                 SB,CS,BB,KK,AB,HIT,H2,H3,HR,SH,SF,IB,HP,GD,ERR,ERR,BF,BK))
 
 names(pitcher_selection)  # 선택된 변수를 pitcher_selection이라는 이름에 저장했습니다.
-
+write.csv(pitcher_selection,'C:/Users/seungjun/Desktop/baseball/data/pitcher_feature_selection.csv')
 
 #--------------------------------------------------------------------------#
 ### ridge, rasso 해보긴 했는데 이를 어떻게 해석해야할지 잘 모르겠습니다  ###
