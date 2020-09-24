@@ -78,11 +78,17 @@ player_before = rbind(player_2017, player_2019, player_2016) %>% unique()
 pitcher_left[is.na(pitcher_left$PCODE) == T, 'PCODE'] = pitcher_left[is.na(pitcher_left$PCODE) == T, ] %>% left_join(player_before, by = c('P_ID')) %>% select(PCODE.y)
 
 
-new_player = pitcher_left[is.na(pitcher_left$PCODE) == T,] %>% select(P_ID, PCODE, T_ID) %>% unique() %>% mutate(PCODE = row_number() + player_before$PCODE %>% max(na.rm = T))
+# 새로 데뷔한 선수들 코드 추가
+new_player = pitcher_left[is.na(pitcher_left$PCODE) == T,] %>% select(P_ID, PCODE, T_ID) %>% unique()
+
+new_PID = c(64896,50397,50109,65937,69703,50203, 69104,67711 ,64580 )
+
+new_player["PCODE"] = new_PID
+
 
 pitcher_left = pitcher_left %>% left_join(new_player, by = c('P_ID', 'T_ID')) %>% mutate(P_ID = case_when(
-  is.na(PCODE.x) == T ~ PCODE.y,
-  TRUE ~ PCODE.x
+  is.na(PCODE.x) == T ~ as.numeric(PCODE.y),
+  TRUE ~ as.numeric(PCODE.x)
 )) %>% select(-c(PCODE.x, PCODE.y))
 
 pitcher_left %>% summary
@@ -92,6 +98,8 @@ pitcher_left %>% summary
 schedule = read.csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\schedule_left.csv")
 
 pitcher_left = pitcher_left %>% left_join(schedule, by = c('year', 'month', 'T_ID'))
+
+pitcher_left %>% summary
 
 
 
