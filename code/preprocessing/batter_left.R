@@ -84,11 +84,16 @@ batter_left[is.na(batter_left$PCODE) == T, 'PCODE'] = batter_left[is.na(batter_l
 
 
 
-new_player = batter_left[is.na(batter_left$PCODE) == T,] %>% select(P_ID, PCODE, T_ID) %>% unique() %>% mutate(PCODE = row_number() + batter_left$PCODE %>% max(na.rm = T))
+new_player = batter_left[is.na(batter_left$PCODE) == T,] %>% select(P_ID, PCODE, T_ID) %>% unique() 
+
+new_PID = c(50350,64209,65462, 50469,64896, 50802, 65522, 67893, 50203, 62332,69104, 67063, 67449)
+
+new_player['PCODE'] = new_PID
+
 
 batter_left = batter_left %>% left_join(new_player, by = c('P_ID', 'T_ID')) %>% mutate(P_ID = case_when(
-  is.na(PCODE.x) == T ~ PCODE.y,
-  TRUE ~ PCODE.x
+  is.na(PCODE.x) == T ~ as.numeric(PCODE.y),
+  TRUE ~ as.numeric(PCODE.x)
 )) %>% select(-c(PCODE.x, PCODE.y))
 
 
@@ -106,5 +111,6 @@ order = order %>% filter(year == 2020, month == 7) %>% select(P_ID, BAT_ORDER) %
 
 batter_left = batter_left %>% left_join(order, by = 'P_ID')
 
+batter_left %>% summary
 
 write.csv(batter_left, "batter_left.csv", row.names = F)
