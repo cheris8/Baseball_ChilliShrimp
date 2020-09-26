@@ -98,3 +98,13 @@ pitcher = read_csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp
 pitcher = pitcher %>% left_join(stadium, by = c('year', 'month', 'T_ID'))
 
 write.csv(pitcher, 'modeling_pitcher_stadium.csv', row.names = F)
+
+
+# modeling_batter랑 합치기
+
+batter = read_csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\modeling_batter.csv")
+
+batter = batter %>% left_join(stadium, by = c('year', 'month', 'T_ID'))
+
+write.csv(batter, 'modeling_batter_stadium.csv', row.names = F)
+
