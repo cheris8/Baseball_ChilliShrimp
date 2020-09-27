@@ -1,29 +1,5 @@
-
-#------------------pitcher 데이터셋 정리하기---------------------#
 library(tidyverse)
-library(lubridate)
-
-pit_2016 = read_csv('C:/Users/seungjun/Desktop/baseball/data/개인투수/2020빅콘테스트_스포츠투아이_제공데이터_개인투수_2016.csv')
-pit_2017 = read_csv('C:/Users/seungjun/Desktop/baseball/data/개인투수/2020빅콘테스트_스포츠투아이_제공데이터_개인투수_2017.csv')
-pit_2018 = read_csv('C:/Users/seungjun/Desktop/baseball/data/개인투수/2020빅콘테스트_스포츠투아이_제공데이터_개인투수_2018.csv')
-pit_2019 = read_csv('C:/Users/seungjun/Desktop/baseball/data/개인투수/2020빅콘테스트_스포츠투아이_제공데이터_개인투수_2019.csv')
-pit_2020 = read_csv('C:/Users/seungjun/Desktop/baseball/data/개인투수/2020빅콘테스트_스포츠투아이_제공데이터_개인투수_2020.csv')
-
-pit_2016 = pit_2016 %>% select(-c(G_ID, HEADER_NO, QUIT_CK, P_WHIP_RT, P2_WHIP_RT, CB_WHIP_RT))
-pit_2017 = pit_2017 %>% select(-c(G_ID, HEADER_NO, QUIT_CK, P_WHIP_RT, P2_WHIP_RT, CB_WHIP_RT))
-pit_2018 = pit_2018 %>% select(-c(G_ID, HEADER_NO, QUIT_CK, P_WHIP_RT, P2_WHIP_RT, CB_WHIP_RT))
-pit_2019 = pit_2019 %>% select(-c(G_ID, HEADER_NO, QUIT_CK, P_WHIP_RT, P2_WHIP_RT, CB_WHIP_RT))
-pit_2020 = pit_2020 %>% select(-c(G_ID, HEADER_NO, QUIT_CK, P_WHIP_RT, P2_WHIP_RT, CB_WHIP_RT))
-
-pitcher = rbind(pit_2016, pit_2017, pit_2018, pit_2019, pit_2020)
-
-pitcher = pitcher %>% mutate(GDAY_DS = ymd(GDAY_DS)) %>% mutate(year = year(GDAY_DS), month = month(GDAY_DS)) %>% select(-GDAY_DS)
-
-colname = pitcher %>% colnames 
-
-pitcher = pitcher %>% select(year, month, colname)
-
-pitcher$WLS[is.na(pitcher$WLS) == T] = 'ND'
+pitcher <- read.csv('pitcher_tidy.csv')
 
 #---------- BABIP -----------------------#
 
@@ -45,62 +21,91 @@ pitcher1 = left_join(pitcher,select(BABIP,P_ID,BABIP), by='P_ID')
 
 
 #------------------------------------------------------------------#
-## ERA
+## 리그 평균 ERA
+Total_ERA = pitcher1 %>%
+  select(year,ER,PA,HIT,BB,HP) %>% 
+  group_by(year) %>%
+  summarise(ER = sum(ER), PA= sum(PA), HIT= sum(HIT),BB= sum(BB), HP= sum(HP)) %>%
+  mutate(Total_ERA = ER*9/(  (PA-HIT-BB-HP)/3) ) %>%
+  select(year,Total_ERA)
+
+
+## 선수별 ERA
 ERA = pitcher1 %>%
-  mutate(ERA = ER/PA)
+  select(P_ID,year,ER,PA,HIT,BB,HP) %>% 
+  mutate(ERA = ER*9/(  (PA-HIT-BB-HP)/3) ) %>%
+  select(ERA)
 
 ERA$ERA[is.na(ERA$ERA)] = 0
-ERA$ERA[is.infinite(ERA$ERA)] = 0
+ERA$ERA[is.infinite(ERA$ERA)] = 99.99
 
 sum(is.na(ERA$ERA))
 sum(is.infinite(ERA$ERA))
 
 
-## WHIP
-WHIP = ERA %>%
-  mutate(WHIP = (HIT + BB)/PA )
+##선수별 FIP.  IB 고려 x
 
-WHIP$WHIP[is.na(WHIP$WHIP)] = 0
-WHIP$WHIP[is.infinite(WHIP$WHIP)] = 0
-
-sum(is.na(WHIP$WHIP))
-sum(is.infinite(WHIP$WHIP))
+Total_FIP = pitcher1 %>%
+  group_by(year) %>%
+  summarise(HR= sum(HR),KK=sum(KK) ,PA= sum(PA), HIT= sum(HIT),BB= sum(BB), HP= sum(HP)) %>%
+  mutate(Total_FIP = (13*HR + 3*(BB+HP) - 2*KK) /  ((PA-HIT-BB-HP)/3)) %>%
+  select(year,Total_FIP)
 
 
-# FIP = (13*HR + 3*(BB-IBB+HBP) - 2*K) / IP + C
-# C = (9*lgER + 2*lgK - 13*lgHR - 3*(lgBB-lgIBB+lgHBP)) / lgIP
-#C는 상수라고 해서 그냥 제외. 결측치 압도적으로 줄었다.
+FIP = pitcher %>%
+  mutate(FIP = (13*HR + 3*(BB+HP) - 2*KK) /  ((PA-HIT-BB-HP)/3)) 
 
 
-FIP = WHIP %>%
-  mutate(FIP=(13*HR + 3*(BB-IB+HP) - 2*KK) / PA )
-
-names(FIP)
+FIP$FIP[is.na(FIP$FIP)] = 0
+FIP$FIP[is.infinite(FIP$FIP)] = 0
 
 sum(is.na(FIP$FIP))
 sum(is.infinite(FIP$FIP))
 
-FIP$FIP[is.na(FIP$FIP)] = 0
-sum(is.na(FIP$FIP))
 
-df2 = FIP %>% 
-  select(c(ERA,WHIP,FIP))
+R_FIP = FIP %>%
+  left_join(Total_ERA,by='year') %>%
+  left_join(Total_FIP,by='year') %>%
+  mutate(R_FIP = FIP + (Total_ERA-Total_FIP)) %>% 
+  select(R_FIP)
 
-pitcher2 <- cbind(pitcher1,df2)
+sum(is.na(R_FIP$R_FIP))
+sum(is.infinite(R_FIP$R_FIP))
 
-#---------------도루시도율 도루 성공율------------------------#
 
-SB_try = pitcher2 %>%
-  mutate(SB_try = (SB + CS) / PA, SB_succ = SB/(SB + CS) )
+kwERA = pitcher1 %>%
+  mutate(kwERA = (5.40 -12*(KK-BB)/PA) ) %>%
+  select(kwERA)
+
+
+kwERA$kwERA[is.na(kwERA$kwERA)] = 0
+kwERA$kwERA[is.infinite(kwERA$kwERA)] = 99.99
+
+sum(is.na(kwERA$kwERA))
+sum(is.infinite(kwERA$kwERA))
+
+pitcher2 <- cbind(pitcher1,ERA,R_FIP,kwERA)
+#---------------도루시도율 도루 성공율 GD rate------------------------#
+data_sb = read.csv('pitcher_to_get_total.csv')
+
+SB_try = data_sb %>%
+  group_by(P_ID) %>%
+  summarise(SB = sum(SB), CS = sum(CS), PA = sum(PA),GD =sum(GD)) %>%          
+  mutate(SB_try = (SB + CS) / PA, SB_succ = SB/(SB + CS),GD_rate=GD/PA ) %>%
+  select(c(P_ID,SB_try,SB_succ,GD_rate))
 
 sum(is.na(SB_try$SB_try))
-sum(is.infinite(SB_try$SB_try))
 sum(is.na(SB_try$SB_succ))
+sum(is.na(SB_try$GD_rate))
+
+sum(is.infinite(SB_try$SB_try))
 sum(is.infinite(SB_try$SB_succ))
+sum(is.infinite(SB_try$GD_rate))
 
 SB_try$SB_try[is.na(SB_try$SB_try)] = 0
-SB_try$SB_succ[is.na(SB_try$SB_succ)] = 0
 SB_try$SB_try[is.infinite(SB_try$SB_try)] = 0
+
+SB_try$SB_succ[is.na(SB_try$SB_succ)] = 0
 SB_try$SB_succ[is.infinite(SB_try$SB_succ)] = 0
 
 sum(is.na(SB_try$SB_try))
@@ -108,31 +113,14 @@ sum(is.infinite(SB_try$SB_try))
 sum(is.na(SB_try$SB_succ))
 sum(is.infinite(SB_try$SB_succ))
 
+pitcher3 <- left_join(pitcher2,SB_try,by='P_ID')
 
-## ERC 고의사구를 인정할 경우
 
-ERC = SB_try %>%
-  mutate(PTB= 0.89*(1.255*(HIT-HR)+4*HR)+0.56*(BB + HP -IB) )  %>%
-  mutate(ERC = 9*((HIT + BB + HP)*PTB)/(PA*AB)-0.56) %>%
-  select(-PTB)
-
-sum(is.na(ERC$ERC))
-sum(is.infinite((ERC$ERC)))
-
-ERC$ERC[is.na(ERC$ERC)] = 0
-ERC$ERC[is.infinite(ERC$ERC)] = 0
-
-sum(is.na(ERC$ERC))
-sum(is.infinite((ERC$ERC)))
-
-names(ERC)
-
-pitcher3 <- ERC
 
 #-------------------------------------------------#
 rate = pitcher3  %>%
   mutate(H2_rate=H2/HIT,H3_rate=H3/HIT,HR_rate=HR/HIT,BB_rate=BB/PA,
-         HP_rate=HP/PA, KK_rate=KK/PA, GD_rate=GD/PA,BF_per_PA=BF/PA,
+         HP_rate=HP/PA, KK_rate=KK/PA, 
          BK_rate= BK/(HIT + BB + HP))
 names(rate)
 
@@ -142,8 +130,6 @@ rate$HR_rate[is.na(rate$HR_rate)] = 0
 rate$BB_rate[is.na(rate$BB_rate)] = 0
 rate$HP_rate[is.na(rate$HP_rate)] = 0
 rate$KK_rate[is.na(rate$KK_rate)] = 0
-rate$GD_rate[is.na(rate$GD_rate)] = 0
-rate$BF_per_PA[is.na(rate$BF_per_PA)] = 0
 rate$BK_rate[is.na(rate$BK_rate)] = 0
 
 sum(is.na(rate$H2_rate))
@@ -152,8 +138,6 @@ sum(is.na(rate$HR_rate))
 sum(is.na(rate$BB_rate))
 sum(is.na(rate$HP_rate))
 sum(is.na(rate$KK_rate))
-sum(is.na(rate$GD_rate))
-sum(is.na(rate$BF_per_PA))
 sum(is.na(rate$BK_rate))
 
 
@@ -163,8 +147,6 @@ rate$HR_rate[is.infinite(rate$HR_rate)] = 0
 rate$BB_rate[is.infinite(rate$BB_rate)] = 0
 rate$HP_rate[is.infinite(rate$HP_rate)] = 0
 rate$KK_rate[is.infinite(rate$KK_rate)] = 0
-rate$GD_rate[is.infinite(rate$GD_rate)] = 0
-rate$BF_per_PA[is.infinite(rate$BF_per_PA)] = 0
 rate$BK_rate[is.infinite(rate$BK_rate)] = 0
 
 sum(is.infinite(rate$H2_rate))
@@ -173,8 +155,6 @@ sum(is.infinite(rate$HR_rate))
 sum(is.infinite(rate$BB_rate))
 sum(is.infinite(rate$HP_rate))
 sum(is.infinite(rate$KK_rate))
-sum(is.infinite(rate$GD_rate))
-sum(is.infinite(rate$BF_per_PA))
 sum(is.infinite(rate$BK_rate))
 
 pitcher4 <- rate
@@ -199,25 +179,62 @@ names(P_KBB)
 pitcher5 <- left_join(pitcher4,P_KBB,by='P_ID')
 names(pitcher5)
 #-------------------------------------------------#
-DER = pitcher5 %>%
-  mutate(DER = (PA - HIT - KK - BB - HP - ERR ) + (PA - HR - KK - BB - HP))
 
-sum(is.na(DER$DER))
-sum(is.infinite((DER$DER)))
+AVG = pitcher5 %>%
+  mutate(AVG = HIT / AB, 
+         OBP = (HIT + BB + HP)/(AB + BB + HP + SF),
+         SLG = ((HIT - H2 - H3 - HR)*1 + H2*2 + H3*3 + HR*4 ) / AB ,
+         OPS = OBP + SLG)
 
-DER$DER[is.na(DER$DER)] = 0
-DER$DER[is.infinite((DER$DER))] = 0
+sum(is.na(AVG$AVG))
+sum(is.na(AVG$OBP))
+sum(is.na(AVG$SLG))
+sum(is.na(AVG$OPS))
 
-sum(is.na(DER$DER))
-sum(is.infinite((DER$DER)))
 
-pitcher6 <- DER
+AVG$AVG[is.na(AVG$AVG)] = 0
+AVG$OBP[is.na(AVG$OBP)] = 0
+AVG$SLG[is.na(AVG$SLG)] = 0
+AVG$OPS[is.na(AVG$OPS)] = 0
+
+sum(is.infinite(AVG$AVG))
+sum(is.infinite(AVG$OBP))
+sum(is.infinite(AVG$SLG))
+sum(is.infinite(AVG$OPS))
+
+AVG
+
+#-------------------------------------------------#
+pitcher6 = AVG %>%
+  group_by(year,T_ID) %>%
+  mutate(ER_rate = ER/R) %>%
+  select(-R) %>%
+  ungroup()
+
+sum(is.na(pitcher6$ER_rate))
+sum(is.infinite(pitcher6$ER_rate))
+
+pitcher6$ER_rate[is.na(pitcher6$ER_rate)] = 0
+
+sum(is.na(pitcher6$ER_rate))
+
+ERR_rate = data_sb %>%
+  group_by(year,T_ID) %>%
+  summarise(PA = sum(PA), ERR = sum(ERR)) %>%
+  mutate(ERR_rate = ERR/PA) %>%
+  select(-PA)
+
+  
+data <- left_join(pitcher6,ERR_rate, by=c('year','T_ID'))
 #-------------------------------------------------#
 library(corrplot) 
 
-data_set = pitcher6 %>% select(-c(year,month,T_ID,VS_T_ID,TB_SC,P_ID,START_CK,RELIEF_CK,
-                                  CG_CK,WLS,HOLD,INN2,AB,HIT,H2,H3,HR,SB,CS,SH,SF,BB,IB,
-                                  HP,KK,GD,WP,ERR,ERR,ER,KBB,BF,BK))
+names(data)
+
+data_set = data %>% select(-c(year,month,T_ID,VS_T_ID_HH,VS_T_ID_HT,VS_T_ID_KT,VS_T_ID_LG,VS_T_ID_LT,
+                              VS_T_ID_NC,VS_T_ID_OB,VS_T_ID_SK,VS_T_ID_SS,VS_T_ID_WO,P_ID,SB_try,SB_succ,GD_rate,
+                                  AB,HIT,H2,H3,HR,SF,BB,HP,KK,ERR,ER,KBB,BK,stadium_MH,stadium_MS,stadium_JS,stadium_SW,
+                                  stadium_DJ,stadium_DG,stadium_GJ,stadium_GC,stadium_SJ,stadium_PH,stadium_US,stadium_CJ,stadium_CW))
 
 
 
@@ -225,66 +242,12 @@ names(data_set)
 pitcher_cor = cor(data_set)           
 corrplot(pitcher_cor ,method="shade",addshade="all",tl.col="red",tl.srt=30, diag=FALSE )
 
-pitcher_selection = pitcher5 %>% select(-c(KBB,ER,HOLD,INN2,WP,WLS,
-                                SB,CS,BB,KK,AB,HIT,H2,H3,HR,SH,SF,IB,HP,GD,ERR,ERR,BF,BK))
+pitcher_selection = data %>% select(-c(KBB,ER,
+                                BB,KK,AB,HIT,H2,H3,HR,SF,HP,BK))
 
 names(pitcher_selection)  # 선택된 변수를 pitcher_selection이라는 이름에 저장했습니다.
 write.csv(pitcher_selection,'C:/Users/seungjun/Desktop/baseball/data/pitcher_feature_selection.csv')
-
-#--------------------------------------------------------------------------#
-### ridge, rasso 해보긴 했는데 이를 어떻게 해석해야할지 잘 모르겠습니다  ###
-require(glmnet)
-
-# 범주형만 뺴고 나머지 전부 넣음
-names(pitcher6)
-cand = pitcher6 %>%  
-  select(-c(year,month,T_ID,VS_T_ID,TB_SC,P_ID,START_CK,RELIEF_CK,CG_CK,
-            WLS))
-
-x=model.matrix(R~.,cand)[,-1]
-y=pitcher6$R
-
-# lasso Regression
-set.seed(1)
-
-train=sample(1:nrow(x), 0.8*nrow(x))
-test=(-train)
-y.test=y[test]
-
-grid=10^seq(10,-2,length=100)
-
-lasso.mod=glmnet(x[train,],y[train],alpha=1,lambda=grid)
-plot(lasso.mod)
-
-set.seed(1)
-cv.out=cv.glmnet(x[train,],y[train],alpha=1)
-plot(cv.out)
-bestlam=cv.out$lambda.min
-bestlam
-
-lasso.pred=predict(lasso.mod,s=bestlam,newx=x[test,])
-mean((lasso.pred-y.test)^2)
-
-out=glmnet(x,y,alpha=1,lambda=grid)
-lasso.coef=predict(out,type="coefficients",s=bestlam)
-lasso.coef
-
-#ridge regression
-
-cv.out=cv.glmnet(x[train,],y[train],alpha=0)
-plot(cv.out)
-bestlam=cv.out$lambda.min
-bestlam
-
-ridge.pred=predict(lasso.mod,s=bestlam,newx=x[test,])
-mean((lasso.pred-y.test)^2)
-
-out=glmnet(x,y,alpha=0,lambda=grid)
-ridge.coef=predict(out,type="coefficients",s=bestlam)
-ridge.coef
-#----------------------------------------------------------#
-
-
+write.csv(data,'pitcher_all.csv')
 
 
 
