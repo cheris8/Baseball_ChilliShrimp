@@ -1,5 +1,5 @@
 library(tidyverse)
-pitcher <- read.csv('pitcher_tidy.csv')
+pitcher <- read.csv('C:\\Users\\dhxog\\Desktop\\ESC_summer\\ë°ì´í„°ë¶„ì„ë¶„ì•¼_í“¨ì²˜ìŠ¤ë¦¬ê·¸_ì¹ ë¦¬ìƒˆìš°\\ë°ì´í„°\\2. preprocessing\\pitcher_tidy.csv')
 
 #---------- BABIP -----------------------#
 
@@ -21,7 +21,7 @@ pitcher1 = left_join(pitcher,select(BABIP,P_ID,BABIP), by='P_ID')
 
 
 #------------------------------------------------------------------#
-## ¸®±× Æò±Õ ERA
+## ???? ???? ERA
 Total_ERA = pitcher1 %>%
   select(year,ER,PA,HIT,BB,HP) %>% 
   group_by(year) %>%
@@ -30,7 +30,7 @@ Total_ERA = pitcher1 %>%
   select(year,Total_ERA)
 
 
-## ¼±¼öº° ERA
+## ?????? ERA
 ERA = pitcher1 %>%
   select(P_ID,year,ER,PA,HIT,BB,HP) %>% 
   mutate(ERA = ER*9/(  (PA-HIT-BB-HP)/3) ) %>%
@@ -43,7 +43,7 @@ sum(is.na(ERA$ERA))
 sum(is.infinite(ERA$ERA))
 
 
-##¼±¼öº° FIP.  IB °í·Á x
+##?????? FIP.  IB ???? x
 
 Total_FIP = pitcher1 %>%
   group_by(year) %>%
@@ -85,8 +85,8 @@ sum(is.na(kwERA$kwERA))
 sum(is.infinite(kwERA$kwERA))
 
 pitcher2 <- cbind(pitcher1,ERA,R_FIP,kwERA)
-#---------------µµ·ç½ÃµµÀ² µµ·ç ¼º°øÀ² GD rate------------------------#
-data_sb = read.csv('pitcher_to_get_total.csv')
+#---------------?????Ãµ?À² ???? ????À² GD rate------------------------#
+data_sb = read.csv('pitcher_C:\\Users\\dhxog\\Desktop\\ESC_summer\\ë°ì´í„°ë¶„ì„ë¶„ì•¼_í“¨ì²˜ìŠ¤ë¦¬ê·¸_ì¹ ë¦¬ìƒˆìš°\\ë°ì´í„°\\2. preprocessing\\to_get_total.csv')
 
 SB_try = data_sb %>%
   group_by(P_ID) %>%
@@ -158,7 +158,7 @@ sum(is.infinite(rate$KK_rate))
 sum(is.infinite(rate$BK_rate))
 
 pitcher4 <- rate
-#----------º¼³İ ´ç »ïÁø ºñÀ²(KBB,Åõ¼ö±âÁØ)---------#
+#----------???? ?? ???? ??À²(KBB,????????)---------#
 
 P_KBB = pitcher4 %>%
   group_by(P_ID) %>%
@@ -208,10 +208,7 @@ AVG
 pitcher6 = AVG %>%
   group_by(year,T_ID) %>%
   mutate(ER_rate = ER/R) %>%
-  select(-R) %>%
-  ungroup()
-
-sum(is.na(pitcher6$ER_rate))
+  select(-R) %um(is.na(pitcher6$ER_rate))
 sum(is.infinite(pitcher6$ER_rate))
 
 pitcher6$ER_rate[is.na(pitcher6$ER_rate)] = 0
@@ -245,9 +242,9 @@ corrplot(pitcher_cor ,method="shade",addshade="all",tl.col="red",tl.srt=30, diag
 pitcher_selection = data %>% select(-c(KBB,ER,
                                 BB,KK,AB,HIT,H2,H3,HR,SF,HP,BK))
 
-names(pitcher_selection)  # ¼±ÅÃµÈ º¯¼ö¸¦ pitcher_selectionÀÌ¶ó´Â ÀÌ¸§¿¡ ÀúÀåÇß½À´Ï´Ù.
-write.csv(pitcher_selection,'C:/Users/seungjun/Desktop/baseball/data/pitcher_feature_selection.csv')
-write.csv(data,'pitcher_all.csv')
+names(pitcher_selection)  # ???Ãµ? ?????? pitcher_selection?Ì¶??? ?Ì¸??? ?????ß½À´Ï´?.
+write.csv(pitcher_selection,'C:/Users/seungjun/\\Users\\dhxog\\Desktop\\ESC_summer\\ë°ì´í„°ë¶„ì„ë¶„ì•¼_í“¨ì²˜ìŠ¤ë¦¬ê·¸_ì¹ ë¦¬ìƒˆìš°\\ë°ì´í„°\\2. preprocessing\\selection.csv')
+write.csv(data,'pitcher_all.csv'C:\\Users\\dhxog\\Desktop\\ESC_summer\\ë°ì´í„°ë¶„ì„ë¶„ì•¼_í“¨ì²˜ìŠ¤ë¦¬ê·¸_ì¹ ë¦¬ìƒˆìš°\\ë°ì´í„°\\2. preprocessing\\)
 
 
 
