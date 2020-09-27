@@ -66,11 +66,13 @@ sum(is.infinite(FIP$FIP))
 R_FIP = FIP %>%
   left_join(Total_ERA,by='year') %>%
   left_join(Total_FIP,by='year') %>%
-  mutate(R_FIP = FIP + (Total_ERA-Total_FIP)) %>% 
-  select(R_FIP)
+  mutate(FIP = FIP + (Total_ERA-Total_FIP)) %>% 
+  select(FIP)
 
-sum(is.na(R_FIP$R_FIP))
-sum(is.infinite(R_FIP$R_FIP))
+
+
+sum(is.na(R_FIP$FIP))
+sum(is.infinite(R_FIP$FIP))
 
 
 kwERA = pitcher1 %>%
@@ -84,7 +86,7 @@ kwERA$kwERA[is.infinite(kwERA$kwERA)] = 99.99
 sum(is.na(kwERA$kwERA))
 sum(is.infinite(kwERA$kwERA))
 
-pitcher2 <- cbind(pitcher1,ERA,R_FIP,kwERA)
+pitcher2 <- cbind(pitcher1,ERA,FIP = R_FIP,kwERA)
 #---------------?????õ?�� ???? ????�� GD rate------------------------#
 data_sb = read.csv('pitcher_C:\\Users\\dhxog\\Desktop\\ESC_summer\\데이터분석분야_퓨처스리그_칠리새우\\데이터\\2. preprocessing\\to_get_total.csv')
 
@@ -208,7 +210,9 @@ AVG
 pitcher6 = AVG %>%
   group_by(year,T_ID) %>%
   mutate(ER_rate = ER/R) %>%
-  select(-R) %um(is.na(pitcher6$ER_rate))
+  select(-R) 
+
+sum(is.na(pitcher6$ER_rate))
 sum(is.infinite(pitcher6$ER_rate))
 
 pitcher6$ER_rate[is.na(pitcher6$ER_rate)] = 0
