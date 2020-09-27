@@ -85,7 +85,7 @@ sum(is.na(kwERA$kwERA))
 sum(is.infinite(kwERA$kwERA))
 
 pitcher2 <- cbind(pitcher1,ERA,R_FIP,kwERA)
-#---------------?????õ?�� ???? ????�� GD rate------------------------#
+#---------------?????õ?�� ???? ????�� GD rate------------------------#
 data_sb = read.csv('pitcher_C:\\Users\\dhxog\\Desktop\\ESC_summer\\데이터분석분야_퓨처스리그_칠리새우\\데이터\\2. preprocessing\\to_get_total.csv')
 
 SB_try = data_sb %>%
@@ -158,7 +158,7 @@ sum(is.infinite(rate$KK_rate))
 sum(is.infinite(rate$BK_rate))
 
 pitcher4 <- rate
-#----------???? ?? ???? ??��(KBB,????????)---------#
+#----------???? ?? ???? ??��(KBB,????????)---------#
 
 P_KBB = pitcher4 %>%
   group_by(P_ID) %>%
@@ -239,12 +239,14 @@ names(data_set)
 pitcher_cor = cor(data_set)           
 corrplot(pitcher_cor ,method="shade",addshade="all",tl.col="red",tl.srt=30, diag=FALSE )
 
-pitcher_selection = data %>% select(-c(KBB,ER,
+pitcher_selection = data %>% select(-c(KBB,ER, ERR, 
                                 BB,KK,AB,HIT,H2,H3,HR,SF,HP,BK))
 
-names(pitcher_selection)  # ???õ? ?????? pitcher_selection?̶??? ?̸??? ?????߽��ϴ?.
-write.csv(pitcher_selection,'C:/Users/seungjun/\\Users\\dhxog\\Desktop\\ESC_summer\\데이터분석분야_퓨처스리그_칠리새우\\데이터\\2. preprocessing\\selection.csv')
-write.csv(data,'pitcher_all.csv'C:\\Users\\dhxog\\Desktop\\ESC_summer\\데이터분석분야_퓨처스리그_칠리새우\\데이터\\2. preprocessing\\)
+names(pitcher_selection)  # ???õ? ?????? pitcher_selection?̶??? ?̸??? ?????߽��ϴ?.
+write.csv(pitcher_selection,'C:\\Users\\dhxog\\Desktop\\ESC_summer\\데이터분석분야_퓨처스리그_칠리새우\\데이터\\2. preprocessing\\pitcher_feature_selection.csv', row.names = F)
+
+
+write.csv(data,'C:\\Users\\dhxog\\Desktop\\ESC_summer\\데이터분석분야_퓨처스리그_칠리새우\\데이터\\2. preprocessing\\pitcher_all.csv', row.names = F)
 
 
 
