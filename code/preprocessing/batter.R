@@ -28,11 +28,5 @@ bat_2019 = bat_2019 %>% select(year, month , colname[1:26])
 bat_2020 = bat_2020 %>% select(year, month , colname[1:26])
 
 
-write.csv(bat_2016, 'bat_2016.csv', row.names = F)
-write.csv(bat_2017, 'bat_2017.csv', row.names = F)
-write.csv(bat_2018, 'bat_2018.csv', row.names = F)
-write.csv(bat_2019, 'bat_2019.csv', row.names = F)
-write.csv(bat_2020, 'bat_2020.csv', row.names = F)
-
 batter = rbind(bat_2016, bat_2017, bat_2018, bat_2019, bat_2020)
-write.csv(batter, 'batter.csv', row.names = F)
+write.csv(batter, 'batter_int.csv', row.names = F)

@@ -23,5 +23,5 @@ pitcher = pitcher %>% select(year, month, colname)
 
 pitcher$WLS[is.na(pitcher$WLS) == T] = 'ND'
 
-write.csv(pitcher, "pitcher.csv", row.names = FALSE)
+write.csv(pitcher, "pitcher_int.csv", row.names = FALSE)
 
