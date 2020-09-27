@@ -88,7 +88,7 @@ sum(is.infinite(kwERA$kwERA))
 
 pitcher2 <- cbind(pitcher1,ERA,FIP = R_FIP,kwERA)
 #---------------?????õ?�� ???? ????�� GD rate------------------------#
-data_sb = read.csv('pitcher_C:\\Users\\dhxog\\Desktop\\ESC_summer\\데이터분석분야_퓨처스리그_칠리새우\\데이터\\2. preprocessing\\to_get_total.csv')
+data_sb = read.csv('C:\\Users\\dhxog\\Desktop\\ESC_summer\\데이터분석분야_퓨처스리그_칠리새우\\데이터\\2. preprocessing\\pitcher_to_get_total.csv')
 
 SB_try = data_sb %>%
   group_by(P_ID) %>%
@@ -209,8 +209,7 @@ AVG
 #-------------------------------------------------#
 pitcher6 = AVG %>%
   group_by(year,T_ID) %>%
-  mutate(ER_rate = ER/R) %>%
-  select(-R) 
+  mutate(ER_rate = ER/R)
 
 sum(is.na(pitcher6$ER_rate))
 sum(is.infinite(pitcher6$ER_rate))
