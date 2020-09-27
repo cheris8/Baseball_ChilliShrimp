@@ -244,7 +244,7 @@ pitcher_cor = cor(data_set)
 corrplot(pitcher_cor ,method="shade",addshade="all",tl.col="red",tl.srt=30, diag=FALSE )
 
 pitcher_selection = data %>% select(-c(KBB,ER, ERR, 
-                                BB,KK,AB,HIT,H2,H3,HR,SF,HP,BK))
+                                BB,KK,AB,HIT,H2,H3,HR,SF,HP,BK, ERA))
 
 names(pitcher_selection)  # ???õ? ?????? pitcher_selection?̶??? ?̸??? ?????߽��ϴ?.
 write.csv(pitcher_selection,'C:\\Users\\dhxog\\Desktop\\ESC_summer\\데이터분석분야_퓨처스리그_칠리새우\\데이터\\2. preprocessing\\pitcher_feature_selection.csv', row.names = F)
