@@ -1,5 +1,5 @@
 library(tidyverse)
-pitcher <- read.csv('C:\\Users\\dhxog\\Desktop\\ESC_summer\\데이터분석분야_퓨처스리그_칠리새우\\데이터\\2. preprocessing\\pitcher_tidy.csv')
+pitcher <- read.csv('https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/pitcher_tidy.csv')
 
 #---------- BABIP -----------------------#
 
@@ -88,7 +88,7 @@ sum(is.infinite(kwERA$kwERA))
 
 pitcher2 <- cbind(pitcher1,ERA,FIP = R_FIP,kwERA)
 #---------------?????õ?�� ???? ????�� GD rate------------------------#
-data_sb = read.csv('C:\\Users\\dhxog\\Desktop\\ESC_summer\\데이터분석분야_퓨처스리그_칠리새우\\데이터\\2. preprocessing\\pitcher_to_get_total.csv')
+data_sb = read.csv('https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/pitcher_to_get_total.csv')
 
 SB_try = data_sb %>%
   group_by(P_ID) %>%
@@ -237,8 +237,8 @@ data_set = data %>% select(-c(year,month,T_ID,VS_T_ID_HH,VS_T_ID_HT,VS_T_ID_KT,V
                                   stadium_DJ,stadium_DG,stadium_GJ,stadium_GC,stadium_SJ,stadium_PH,stadium_US,stadium_CJ,stadium_CW))
 
 
+data_set = data_set %>% ungroup() %>% select(-c(T_ID))
 
-names(data_set)
 pitcher_cor = cor(data_set)           
 corrplot(pitcher_cor ,method="shade",addshade="all",tl.col="red",tl.srt=30, diag=FALSE )
 
