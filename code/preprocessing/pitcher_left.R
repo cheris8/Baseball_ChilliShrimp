@@ -1,18 +1,17 @@
 library(tidyverse)
 
 # 1. 크롤링 데이터 합치기
-pitcher = read_csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\pitcher_predict.csv")
-colnames(pitcher)
 
-july_pitcher = read_csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\kbo_record_pitcher_july.csv")
+
+july_pitcher = read_csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/kbo_record_pitcher_july.csv")
 
 july_pitcher = july_pitcher %>% mutate(year = 2020, month = 7) %>% select(-c(X1, 순위)) 
 
-aug_pitcher = read_csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\kbo_record_pitcher_august.csv")
+aug_pitcher = read_csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/kbo_record_pitcher_august.csv")
 
 aug_pitcher = aug_pitcher %>% mutate(year = 2020, month = 8) %>% select(-c(X1, 순위)) 
 
-sep_pitcher = read_csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\kbo_record_pitcher_septemberplus.csv")
+sep_pitcher = read_csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/kbo_record_pitcher_septemberplus.csv")
 
 sep_pitcher = sep_pitcher %>% mutate(year = 2020, month = 9) %>% select(-c(X1, 순위))
 
@@ -46,13 +45,15 @@ pitcher_left = pitcher_left %>% mutate(PA = AB + BB + HP)
 
 # 2. P_ID, T_ID 코드로 바꾸기
 
-player = read.csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\선수\\2020빅콘테스트_스포츠투아이_제공데이터_선수_2020.csv")
+player = read.csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/%EC%84%A0%EC%88%98/2020%EB%B9%85%EC%BD%98%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8A%A4%ED%8F%AC%EC%B8%A0%ED%88%AC%EC%95%84%EC%9D%B4_%EC%A0%9C%EA%B3%B5%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%84%A0%EC%88%98_2020.csv")
 
-player_2016 = read.csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\선수\\2020빅콘테스트_스포츠투아이_제공데이터_선수_2016.csv")
+player_2016 = read.csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/%EC%84%A0%EC%88%98/2020%EB%B9%85%EC%BD%98%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8A%A4%ED%8F%AC%EC%B8%A0%ED%88%AC%EC%95%84%EC%9D%B4_%EC%A0%9C%EA%B3%B5%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%84%A0%EC%88%98_2016.csv")
 
-player_2017 = read.csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\선수\\2020빅콘테스트_스포츠투아이_제공데이터_선수_2017.csv")
+player_2017 = read.csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/%EC%84%A0%EC%88%98/2020%EB%B9%85%EC%BD%98%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8A%A4%ED%8F%AC%EC%B8%A0%ED%88%AC%EC%95%84%EC%9D%B4_%EC%A0%9C%EA%B3%B5%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%84%A0%EC%88%98_2017.csv")
 
-player_2019 = read.csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\선수\\2020빅콘테스트_스포츠투아이_제공데이터_선수_2019.csv")
+player_2019 = read.csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/%EC%84%A0%EC%88%98/2020%EB%B9%85%EC%BD%98%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8A%A4%ED%8F%AC%EC%B8%A0%ED%88%AC%EC%95%84%EC%9D%B4_%EC%A0%9C%EA%B3%B5%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%84%A0%EC%88%98_2019.csv")
+
+player_2018 = read.csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/%EC%84%A0%EC%88%98/2020%EB%B9%85%EC%BD%98%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8A%A4%ED%8F%AC%EC%B8%A0%ED%88%AC%EC%95%84%EC%9D%B4_%EC%A0%9C%EA%B3%B5%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%84%A0%EC%88%98_2018.csv")
 
 player_2016 = player_2016 %>% select(PCODE, NAME, T_ID)
 
@@ -91,15 +92,6 @@ pitcher_left = pitcher_left %>% left_join(new_player, by = c('P_ID', 'T_ID')) %>
   TRUE ~ as.numeric(PCODE.x)
 )) %>% select(-c(PCODE.x, PCODE.y))
 
-pitcher_left %>% summary
-
-# 팀간 경기수 포함
-
-schedule = read.csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\schedule_left.csv")
-
-pitcher_left = pitcher_left %>% left_join(schedule, by = c('year', 'month', 'T_ID'))
-
-pitcher_left %>% summary
 
 
 
