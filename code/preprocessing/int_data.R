@@ -3,41 +3,27 @@
 library(tidyverse)
 
 
-# 2020년 6월까지
-batter_before = read.csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\batter_feature_selection.csv")
+# 2. 2020년 7월부터 크롤링한것들 이어붙이기
 
-batter_before = batter_before %>% select(-X)
+batter_after = read.csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/kbo_record_batter_byPID.csv")
 
-pitcher_before = read.csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\pitcher_feature_selection.csv")
-
-pitcher_before = pitcher_before %>% select(-X)
-
-batter_before %>% glimpse
-
-pitcher_before %>% glimpse
-
-# 2020년 7월부터 크롤링한것들 이어붙이기
-
-batter_after = read.csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\kbo_record_batter_byPID.csv")
-
-pitcher_after = read.csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\kbo_record_pitcher_byPID.csv")
+pitcher_after = read.csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/kbo_record_pitcher_byPID.csv")
 
 batter_after = batter_after %>% transmute(P_ID = P_ID, year = year, month = month, AVG = AVG1, PA = PA, AB = AB, HIT = H, H2 = X2B,
                            H3 = X3B, HR = HR, SB = SB, CS = CS, BB = BB, HP = HBP, KK = SO, GP = GDP, SF = PA - AB - BB - HP)
 
 batter_after = batter_after %>% select(year, month, P_ID, PA, SB, CS, SF)
 
-pitcher_after %>% glimpse
 
 pitcher_after = pitcher_after %>% transmute(P_ID = P_ID, year = year, month = month, PA = TBF, HIT = H, HR = HR, BB = BB, HP = HBP, KK = SO, R = R, ER = ER)
 
 
-batter_left = read.csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\batter_left.csv")
+batter_left = read.csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/batter_left.csv")
 
 batter_left = batter_left %>% select(-PA)
 
 
-pitcher_left = read.csv("C:\\Users\\dhxog\\Desktop\\ESC_summer\\Baseball_ChilliShrimp\\data\\pitcher_left.csv")
+pitcher_left = read.csv("https://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/master/data/pitcher_left.csv")
 
 
 batter_left = batter_left %>% left_join(batter_after, by = c("year", "month", "P_ID"))
@@ -55,6 +41,9 @@ pitcher_left = pitcher_left %>% mutate(AB = case_when(
 
 pitcher_left = pitcher_left %>% mutate(SF = PA - AB - BB - HP)
 
+pitcher_left = pitcher_left %>% select(-AVG)
+
+batter_left
 
 ## 저장
 
