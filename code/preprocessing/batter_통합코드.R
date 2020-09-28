@@ -1,11 +1,11 @@
 
-###----------º¼³Ý ´ç »ïÁø ºñÀ²(KBB,Å¸ÀÚ±âÁØ)---------###
+###----------???? ?? ???? ??À²(KBB,Å¸?Ú±???)---------###
 ##
-### ÀÏ´Ü ¿©±â¼­ batter_tidy¸¦ ±×³É ºÒ·¯¿Í¼­ ÁøÇàÇß½À´Ï´Ù.
-### ¾Õ¿¡ ÄÚµå°¡ ÀÌ¾îÁö¸é ºÒ·¯¿Â °Å¸¸ »èÁ¦ÇÏ¸é µÉ °Í °°½À´Ï´Ù!
+### ?Ï´? ???â¼­ batter_tidy?? ?×³? ?Ò·??Í¼? ?????ß½À´Ï´?.
+### ?Õ¿? ?Úµå°¡ ?Ì¾????? ?Ò·??? ?Å¸? ??Á¦?Ï¸? ?? ?? ???À´Ï´?!
 ###
 ##
-batter_tidy = read.csv('C:/Users/seungjun/Desktop/baseball/data/batter_tidy.csv')
+batter_tidy = read.csv('C:/Users/seungjuhttps://raw.githubusercontent.com/njj06135/Baseball_ChilliShrimp/mastery.csv')
 
 
 B_KBB = batter_tidy %>%
@@ -25,7 +25,7 @@ sum(is.infinite(B_KBB$KBB))
 
 batter_tidy = left_join(batter_tidy,select(B_KBB,c('P_ID','KBB')),by='P_ID')
 
-#------------µµ·ç ½ÃµµÀ², µµ·ç ¼º°øÀ² ----------------------------# 
+#------------???? ?Ãµ?À², ???? ????À² ----------------------------# 
 SB_try = batter_tidy %>%
   group_by(P_ID) %>%
   summarise(SB = sum(SB), CS = sum(CS), PA = sum(PA)) %>%          
@@ -48,14 +48,14 @@ sum(is.infinite(SB_try$SB_succ))
 
 
 
-select(SB_try,c(SB_try,SB) )  # KBB,SB_rate tidy¿¡ Ãß°¡
+select(SB_try,c(SB_try,SB) )  # KBB,SB_rate tidy?? ?ß°?
 batter_tidy2 = left_join(batter_tidy,select(SB_try,c(P_ID,SB_try,SB_succ)),by= 'P_ID' )
 
 #------------BABIP------------------------------#
 BABIP = batter_tidy2 %>%                     
-  group_by(P_ID) %>%                #  Å¸ÀÚ P_ID º°·Î ÅëÇÕµÈ º¯¼öµé »ý¼º
+  group_by(P_ID) %>%                #  Å¸?? P_ID ???? ???Õµ? ?????? ????
   summarise(Total_HIT = sum(HIT),Total_HR = sum(HR),Total_AB = sum(AB),Total_KK = sum(KK),Total_SF = sum(SF)) %>%
-  mutate(BABIP = (Total_HIT - Total_HR) / (Total_AB - Total_KK - Total_HR + Total_SF))   # BABIP °è»ê
+  mutate(BABIP = (Total_HIT - Total_HR) / (Total_AB - Total_KK - Total_HR + Total_SF))   # BABIP ????
 
 sum(is.na(BABIP$BABIP))             
 sum(is.infinite((BABIP$BABIP)))
@@ -66,7 +66,7 @@ sum(is.na(BABIP$BABIP))
 
 batter_tidy3 = left_join(batter_tidy2,select(BABIP,P_ID,BABIP), by='P_ID')
 
-#------------°¢Á¾_rate----------------------#
+#------------??Á¾_rate----------------------#
 df = batter_tidy %>%
   mutate(H2_rate=H2/HIT,H3_rate=H3/HIT,HR_rate=HR/HIT,BB_rate=BB/PA,
          KK_rate=KK/PA, HP_rate=HP/PA, GD_rate=GD/PA)
@@ -126,7 +126,7 @@ XR$XR[is.na(XR$XR)] = 0
 
 batter_tidy5 = cbind(batter_tidy4,XR)
 
-#--------Å¸À²_Ãâ·çÀ²_ÀåÅ¸À²_OPS-------------------------#
+#--------Å¸À²_????À²_??Å¸À²_OPS-------------------------#
 AVG = batter_tidy %>%
   mutate(AVG = HIT / AB, 
          OBP = (HIT + BB + HP)/(AB + BB + HP + SF),
@@ -175,7 +175,7 @@ corrplot(batter_cor ,method="shade",addshade="all",tl.col="red",tl.srt=30, diag=
 batter_selection = batter_tidy6 %>% select(-c(KK_rate,KBB,SB,CS,BB,KK,AB,HIT,H2,H3
                                               ,HR,SF,HP,GD))
 
-names(batter_selection)  #  ¼±ÅÃµÈ º¯¼öµé -> batter_selection¿¡ ÀúÀåÇß½À´Ï´Ù.
+names(batter_selection)  #  ???Ãµ? ?????? -> batter_selection?? ?????ß½À´Ï´?.
 
 write.csv(batter_selection,'C:/Users/seungjun/Desktop/baseball/data/batter_feature_selection.csv')
 write.csv(batter_tidy6,'batter_all.csv')
